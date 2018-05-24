@@ -407,6 +407,7 @@ sudo -u www-data misp-modules -s &> /var/log/misp_mod_logs/misp_mod_logs-`date +
 error_check 'MISP module script'
 
 ########################################
+#Modify /etc/rc.local to add the MISP workers and module scripts to start on boot. If the file has already been modified, do nothing. rc.local doesn't exist in Ubuntu 18.04, so we have to create it. Then we make sure that the execute permissions are set on the file.
 
 print_status "Adding persistence for MISP workers and module service via rc.local.."
 
@@ -444,6 +445,6 @@ print_notification "I highly recommend accessing your MISP instance via IP addre
 print_notification "Default credentials: admin@admin.test//admin"
 print_notification "Obviously, you'll want to change this upon login."
 print_notification "Consider deleting this script after execution! It contains your mysql root user password and misp mysql user password! Save those passwords, delete this script!"
-print_notification "Please note that if you require MISP to be able to send e-mail, Postfix and GPG configuration has been left as an exercise to the user. Commands for generating a GPG key for the MISP instance have been commented out at lines 349-351 if you wish to use them."
+print_notification "Please note that if you require MISP to be able to send e-mail, Postfix and GPG configuration has been left as an exercise to the user. Commands for generating a GPG key for the MISP instance have been commented out at lines 356-358 if you wish to use them."
 
 exit 0

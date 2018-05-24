@@ -2,7 +2,7 @@ AutoMISP
 
 a da_667 endeavor
 
-This shell script is designed to automatically install MISP (https://github.com/MISP/MISP) on Ubuntu 16.04. 
+This shell script is designed to automatically install MISP (https://github.com/MISP/MISP) and the misp-modules extension on either Ubuntu 16.04, or 18.04.
 
 What this script does:
 
@@ -23,7 +23,7 @@ What this script does NOT do:
 -It will NOT create OR configure GPG. However if the user wishes to do so manually, the commands to run to generate/use GPG are included in the script, but commented out.
 
 
-This script has NOT been tested on Debian or other debian-based distros, so your mileage may vary! After execution you should be left with a functional MISP installation. Please note that this script does NOT handle installation or configuration of Postfix and/or PGP key setup. Installing/Configuring Postfix for your environment is an exercise left to the user. However, the bindings required for MISP to send PGP mail are installed, and commands to generate keys, etc are commented out at lines 349-351.
+This script has NOT been tested on Debian or other debian-based distros, so your mileage may vary! After execution you should be left with a functional MISP installation. Please note that this script does NOT handle installation or configuration of Postfix and/or PGP key setup. Installing/Configuring Postfix for your environment is an exercise left to the user. However, the bindings required for MISP to send PGP mail are installed, and commands to generate keys, etc are commented out at lines 356-358.
 
 Notes:
 
