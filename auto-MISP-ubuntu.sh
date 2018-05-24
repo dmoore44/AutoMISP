@@ -1,5 +1,5 @@
 #!/bin/bash
-#Autosnort script for Ubuntu 12.04+
+#This script automatically installs MISP for Ubuntu 16.04+
 ########################################
 
 #PLEASE MAKE SURE TO SET THE FOLLOWING VARIABLES:
@@ -94,10 +94,10 @@ fi
 
 print_status "OS Version Check.."
 release=`lsb_release -r|awk '{print $2}'`
-if [[ $release == "16."* ]]; then
+if [[ $release == "16."* || "18."* ]]; then
 	print_good "OS is Ubuntu. Good to go."
 else
-    print_notification "This is not Ubuntu 16.x, this autosnort script has NOT been tested on other platforms."
+    print_notification "This is not Ubuntu 16.x or 18.x, this script has NOT been tested on other platforms."
 	print_notification "You continue at your own risk!(Please report your successes or failures!)"
 fi
 
@@ -118,16 +118,23 @@ export DEBIAN_FRONTEND=noninteractive
 
 # System updates
 print_status "Performing apt-get update and upgrade (May take a while if this is a fresh install).."
-apt-get update &>> $logfile && apt-get -y upgrade &>> $logfile
+apt-get update &>> $logfile && apt-get -y dist-upgrade &>> $logfile
 error_check 'System updates'
 
 ########################################
-#These packages are required to run MISP. I've also included a couple of basic system administration packages (ntp and ntpdate), as well as a package to help with entropy/RNG for gpg key generation
+#These packages are required to run MISP. The if/then statement covers installing packages for Ubuntu 18.04, and 16.04
 
-print_status "Installing: vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-fastcgi libapache2-modsecurity  php7.0 libapache2-mod-php php-dev php7.0-common php-redis php7.0-gd php-mysql php7.0-cli php7.0-cgi php-pear php-auth php7.0-mcrypt php7.0-curl php7.0-intl php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php-memcache php-imagick php-gettext ntp ntpdate php7.0-zip php7.0-opcache php-apcu php7.0-fpm php-crypt-gpg rng-tools python3-dev python3-pip libpq5.."
-
-declare -a packages=( vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-fastcgi libapache2-modsecurity php7.0 libapache2-mod-php php-dev php7.0-common php-redis php7.0-gd php-mysql php7.0-cli php7.0-cgi php-pear php-auth php7.0-mcrypt php7.0-curl php7.0-intl php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php-memcache php-imagick php-gettext php7.0-zip php7.0-opcache php-apcu php7.0-fpm php-crypt-gpg rng-tools python3-dev python3-pip libpq5 );
-install_packages ${packages[@]}
+if [[ $release == "18."* ]]; then
+	print_status "Installing: vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-security2 php libapache2-mod-php php-dev php-common php-redis php-gd php-mysql php-cli php-cgi php-pear php-curl php-intl php-pspell php-recode php-sqlite3 php-tidy php-xmlrpc php-xsl php-memcache php-imagick php-gettext ntp ntpdate php-zip php-opcache php-apcu php-fpm rng-tools python3-dev python3-pip libpq5.."
+	
+	declare -a packages=( vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-security2 php libapache2-mod-php php-dev php-common php-redis php-gd php-mysql php-cli php-cgi php-pear php-curl php-intl php-pspell php-recode php-sqlite3 php-tidy php-xmlrpc php-xsl php-memcache php-imagick php-gettext ntp ntpdate php-zip php-opcache php-apcu php-fpm rng-tools python3-dev python3-pip libpq5 );
+	install_packages ${packages[@]}
+else
+	print_status "Installing: vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-fastcgi libapache2-modsecurity  php7.0 libapache2-mod-php php-dev php7.0-common php-redis php7.0-gd php-mysql php7.0-cli php7.0-cgi php-pear php-auth php7.0-mcrypt php7.0-curl php7.0-intl php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php-memcache php-imagick php-gettext ntp ntpdate php7.0-zip php7.0-opcache php-apcu php7.0-fpm php-crypt-gpg rng-tools python3-dev python3-pip libpq5.."
+	
+	declare -a packages=( vim curl gnupg-agent git redis-server zip gcc make sudo binutils openssl imagemagick memcached mcrypt python python-dev python-pip libxml2-dev libxslt1-dev zlib1g-dev mariadb-client mariadb-server apache2 apache2-doc apache2-utils apache2-suexec-pristine libapache2-mod-fcgid libapache2-mod-fastcgi libapache2-modsecurity php7.0 libapache2-mod-php php-dev php7.0-common php-redis php7.0-gd php-mysql php7.0-cli php7.0-cgi php-pear php-auth php7.0-mcrypt php7.0-curl php7.0-intl php7.0-pspell php7.0-recode php7.0-sqlite3 php7.0-tidy php7.0-xmlrpc php7.0-xsl php-memcache php-imagick php-gettext php7.0-zip php7.0-opcache php-apcu php7.0-fpm php-crypt-gpg rng-tools python3-dev python3-pip libpq5 );
+	install_packages ${packages[@]}
+fi
 
 ########################################
 #We make /etc/apache2/ssl and set strict r/w/x permissions for root only in the directory. 
@@ -235,9 +242,9 @@ print_notification "Please note that the default ServerName is set to `hostname`
 if [ -d /usr/share/php/data/Crypt_GPG ]; then
 	print_notification "Crypt_GPG already installed."
 else
-	print_status "Installing Crypt_GPG.."
-	pear install Crypt_GPG &>> $logfile
-	error_check 'Installation of Crypt_GPG'
+	print_status "Installing Crypt_GPG and Net_GeoIP.."
+	pear install Crypt_GPG Net_GeoIP &>> $logfile
+	error_check 'Installation of Crypt_GPG and Net_GeoIP'
 fi
 
 ########################################
@@ -305,9 +312,9 @@ print_status "modifying /etc/php/7.0/apache2/php.ini to use redis.so.."
 if [ -f /etc/php/7.0/apache2/php.ini.bak ]; then
 	print_notification "redis.so already enabled"
 else
-	cp /etc/php/7.0/apache2/php.ini /etc/php/7.0/apache2/php.ini.bak
-	echo "; Support for phpredis - added on `date`" >> /etc/php/7.0/apache2/php.ini
-	echo "extension=redis.so" >> /etc/php/7.0/apache2/php.ini
+	cp /etc/php/?.?/apache2/php.ini /etc/php/?.?/apache2/php.ini.bak
+	echo "; Support for phpredis - added on `date`" >> /etc/php/?.?/apache2/php.ini
+	echo "extension=redis.so" >> /etc/php/?.?/apache2/php.ini
 fi
 
 ########################################
@@ -386,31 +393,37 @@ error_check 'Installation of pyzmq and redis'
 
 print_status "Installing MISP extra modules.."
 
-dir_check /opt/misp_mod
+cd /usr/local/src
 dir_check /var/log/misp_mod_logs/
 chown -R www-data:www-data /var/log/misp_mod_logs
-cd /opt/misp_mod
 git clone https://github.com/MISP/misp-modules.git &>> $logfile
 error_check "Download of MISP modules"
 cd misp-modules
-pip3 install -r REQUIREMENTS &>> $logfile
+pip3 install -I -r REQUIREMENTS &>> $logfile
 error_check 'MISP module requirement installation'
-sudo -u www-data python3 /opt/misp_mod/misp-modules/bin/misp-modules.py &> /var/log/misp_mod_logs/misp_mod_logs-`date +%Y-%m-%d:%H:%M:%S`.log &
+pip3 install -I . &>> $logfile
+error_check 'misp-modules installation'
+sudo -u www-data misp-modules -s &> /var/log/misp_mod_logs/misp_mod_logs-`date +%Y-%m-%d:%H:%M:%S`.log &
 error_check 'MISP module script'
 
 ########################################
-#Modify /etc/rc.local to add the MISP workers and module scripts to start on boot. If the file has already been modified, do nothing.
 
 print_status "Adding persistence for MISP workers and module service via rc.local.."
 
 if [ -f /etc/rc.local.bak ]; then
 	print_notification "misp workers and extra modules already added."
 else
-	cp /etc/rc.local /etc/rc.local.bak
+	if [ -f /etc/rc.local ]; then
+		cp /etc/rc.local /etc/rc.local.bak
+	else
+		touch /etc/rc.local
+		echo "#!/bin/bash" >> /etc/rc.local
+	fi
 	sed -i "s#exit 0##" /etc/rc.local
 	echo "sudo -u www-data bash /var/www/MISP/app/Console/worker/start.sh" >> /etc/rc.local
-	echo "sudo -u www-data python3 /opt/misp_mod/misp-modules/bin/misp-modules.py &> /var/log/misp_mod_logs/misp_mod_logs-`date +%Y-%m-%d:%H:%M:%S`.log &" >> /etc/rc.local
+	echo "sudo -u www-data misp-modules -s &> /var/log/misp_mod_logs/misp_mod_logs-\`date +%Y-%m-%d:%H:%M:%S\`.log &" >> /etc/rc.local
 	echo "exit 0" >> /etc/rc.local
+	chmod u+x /etc/rc.local
 	print_good "rc.local successfully modified"
 fi
 
